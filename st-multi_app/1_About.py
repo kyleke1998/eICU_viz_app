@@ -8,8 +8,7 @@ page_icon=":wave:",
 layout="wide", 
 initial_sidebar_state="expanded")
 
-st.title('About')
 
-logo = Image.open('../images/logo.jpg')
+logo = Image.open('./images/logo_2.png')
 st.image(logo)
-st.write("Introduction to the EICU Database Demo App")
+st.title('About')
