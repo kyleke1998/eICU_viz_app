@@ -73,7 +73,8 @@ df["iculos_residual"] = df["actualiculos"] - df["predictediculos"]
 
 df['hospitaladmittime24'] = pd.to_datetime(df['hospitaladmittime24'])
 
-
+# Page Header
+st.title("Performance Monitoring")
 
 
 # Select demographics to stratify by
@@ -97,8 +98,7 @@ metrics_all = metrics_all.melt(id_vars=['hospitaladmittime24'], var_name="Metric
 
 
 
-# Page Header
-st.title("Performance Monitoring")
+
 st.subheader('1. Predicted Hospital Mortality Performance')
 
 
