@@ -6,7 +6,6 @@ from sklearn.metrics import accuracy_score, roc_curve, auc
 from sklearn.metrics import recall_score, precision_score
 import numpy as np
 import matplotlib.pyplot as plt
-import altair_catplot as altcat
 import os
 
 
@@ -72,8 +71,8 @@ df["predictedhospitalmortality"] = df["predictedhospitalmortality"].apply(lambda
 df["hospitallos_residual"] = df["actualhospitallos"] - df["predictedhospitallos"]
 df["iculos_residual"] = df["actualiculos"] - df["predictediculos"]
 
-# Page Header
-st.title("Performance Monitoring")
+df['hospitaladmittime24'] = pd.to_datetime(df['hospitaladmittime24'])
+
 
 
 
@@ -87,28 +86,50 @@ regions = np.array(['Midwest', 'All', 'South', 'West', 'Northeast'])
 region = st.selectbox('Regions',options = regions, index=1)
 
 
-st.subheader('Predicted Hospital Mortality Performance')
 if region != default_region:
     subset = df.query("region == @region")
 else:
     subset = df
 
+metrics_all = subset.groupby(subset['hospitaladmittime24'].dt.hour).apply(group_accuracy).reset_index()
+metrics_all = metrics_all.melt(id_vars=['hospitaladmittime24'], var_name="Metric", value_name="Rate")
+
+
+
+
+# Page Header
+st.title("Performance Monitoring")
+st.subheader('1. Predicted Hospital Mortality Performance')
+
+
+mortality_pred_by_hour = alt.Chart(metrics_all).mark_line().encode(
+    x=alt.X("hospitaladmittime24", title="Hour of Admission",type="quantitative", axis=alt.Axis(tickCount=24)),
+    y=alt.Y("Rate", title="Rate",type="quantitative"),
+    color=alt.Color("Metric",type="nominal"),tooltip=["Metric","Rate"]).properties(title="Predicted Hospital Mortality Performance by Hour of Admission (Filtered by Regions Only)",width=800,height=400)
+
+st.altair_chart(mortality_pred_by_hour)
+
+
+
+
 
 metrics = subset.groupby([demographic]).apply(group_accuracy).reset_index()
 metrics = metrics.melt(id_vars=[demographic], var_name="Metric", value_name="Rate")
+
+
 
 chart = alt.Chart(metrics).mark_bar().encode(
     y=alt.Y("Rate", title="Rate",type="quantitative"),
     x=alt.X(demographic,title=demographic, type="nominal", sort="y"),
     column=alt.Column('Metric', title='Metric', type="nominal"),
     color=alt.Color(demographic,type="nominal"), tooltip=["Rate:Q"]).properties(
-    title=f"Predicted Hospital Mortality Performance by {demographic}",width=300,height=400)
+    title=f"Predicted Hospital Mortality Performance by {demographic}",width=200,height=400)
 
 
 
 st.altair_chart(chart)
 
-st.subheader('Predicted Hospital and ICU Length of Stay Performance')
+st.subheader('2.Predicted Hospital and ICU Length of Stay Performance')
 
 jitter_1 =  alt.Chart().mark_circle(size=14).encode(
     x=alt.X(
