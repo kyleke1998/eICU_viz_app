@@ -11,7 +11,7 @@ This is a Streamlit web application that aims to provide a user-friendly interfa
     in such things as demographics, patient flow and APACHE score prediction, which will be used to 
     guide policy-making and hospital management.
 
-Link to web application: [link](https://google.com)
+Link to web application: [link](https://kyleke1998-eicu-viz-app-st-multi-app1-about-w9lygk.streamlit.app/)
 
 The visualizatons are divided into three pages:
 
