@@ -9,9 +9,9 @@ import matplotlib.pyplot as plt
 import os
 
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
+# os.chdir(os.path.dirname(os.path.abspath(__file__)))
 #PATH = "C:/Users/kylek/OneDrive - Harvard University/BMI706/project/eICU_viz_app/data/patient.csv"
-PATH = "../../data/patient.csv"
+PATH = "../data/patient.csv"
 
 
 
