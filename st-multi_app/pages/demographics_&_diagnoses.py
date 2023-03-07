@@ -119,63 +119,32 @@ regional_demographic_map = {
     "Age Group": "agegroup",
     "Ethnicity": "ethnicity",
     "BMI Group": "bmigroup",
-    "Age": "age",
-    "BMI": "bmi",
 }
 
 demographic1 = regional_demographic_map[
     st.selectbox(
-        label="Type of demographics",
+        label="Type of categorical demographics",
         options=sorted(regional_demographic_map.keys()),
         index=0,
     )
 ]
 selector2 = alt.selection_multi(fields=["hospitalid"])
-if demographic1 in ["age", "bmi"]:
-    chart3 = (
-        alt.Chart(subset)
-        .mark_boxplot(size=400 / subset["hospitalid"].nunique())
-        .encode(
-            x=alt.X("hospitalid:N", title="Hospital ID"),
-            y=alt.Y(
-                demographic1,
-                type="quantitative",
-                scale=alt.Scale(domain=(0, subset[demographic1].max() + 10)),
-            ),
-            # color=alt.condition(
-            #     selector2,
-            #     alt.value("blue"),
-            #     alt.value("lightgray"),
-            # ),
-            tooltip=alt.Tooltip([demographic1, "hospitalid"]),
-        )
-        # .add_selection(selector2)
-        .properties(height=400, width=600)
+chart3 = (
+    alt.Chart(subset, height=200)
+    .mark_bar(width=5)
+    .encode(
+        x=alt.X("hospitalid:N", title="Hospital ID"),
+        y=alt.Y("count()"),
+        color=alt.condition(
+            selector2,
+            alt.Color(demographic1, type="nominal"),
+            alt.value("lightgray"),
+        ),
+        tooltip=[demographic1, "count()"],
     )
-else:
-    chart3 = (
-        alt.Chart(subset, height=200)
-        .mark_bar(width=5)
-        .encode(
-            x=alt.X("hospitalid:N", title="Hospital ID"),
-            y=alt.Y("count()"),
-            color=alt.Color(
-                    demographic1,
-                    type="nominal"
-            ),
-            # color=alt.condition(
-            #     selector2,
-            #     alt.Color(
-            #         demographic1,
-            #         type="nominal"
-            #     ),
-            #     alt.value("lightgray"),
-            # ),
-            tooltip=[demographic1, "count()"],
-        )
-        .add_selection(selector2)
-        .properties(height=400, width=600)
-    )
+    .add_selection(selector2)
+    .properties(height=400, width=600)
+)
 chart4 = (
     alt.Chart(subset, height=200, title="Count of diagnoses in hospitals")
     .mark_bar()
@@ -189,8 +158,38 @@ chart4 = (
         x=alt.X("count()"),
         tooltip=["primarydiagnosis", "count()"],
     )
-    # .transform_filter(selector2)
+    .transform_filter(selector2)
     .properties(height=400, width=600)
 )
 
 st.altair_chart((chart3 & chart4))
+
+
+regional_demographic_map1 = {"Age": "age", "BMI": "bmi"}
+
+demographic2 = regional_demographic_map1[
+    st.selectbox(
+        label="Type of numerical demographics",
+        options=sorted(regional_demographic_map1.keys()),
+        index=0,
+    )
+]
+
+# Part 2.1: Boxplot of numerical demographics between hospitals 
+# isolated out because selectors do not work with boxplot:
+# https://github.com/altair-viz/altair/issues/2255
+chart5 = (
+    alt.Chart(subset)
+    .mark_boxplot(size=400 / subset["hospitalid"].nunique())
+    .encode(
+        x=alt.X("hospitalid:N", title="Hospital ID"),
+        y=alt.Y(
+            demographic2,
+            type="quantitative",
+            scale=alt.Scale(domain=(0, subset[demographic2].max() + 10)),
+        ),
+        tooltip=alt.Tooltip([demographic2, "hospitalid"]),
+    )
+    .properties(height=400, width=600)
+)
+st.altair_chart(chart5)
