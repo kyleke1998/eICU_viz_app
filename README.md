@@ -1,6 +1,7 @@
 
 # eICU_viz_app
 
+![app banner](./images/logo_2.png)
 
 This is a Streamlit web application that aims to provide a user-friendly interface for exploring
     the demo eICU-CRD dataset, which consists of 2500 patient stays in the ICU between 2014-2015. 
