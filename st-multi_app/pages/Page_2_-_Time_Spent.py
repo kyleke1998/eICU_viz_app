@@ -1,14 +1,9 @@
 import altair as alt
 import pandas as pd
 import streamlit as st
-import datetime
-import numpy as np
-import os
-from vega_datasets import data
 import numpy as np
 
-os.chdir(os.path.dirname(os.path.abspath(__file__)))
-PATH = "../../data/patient.csv"
+PATH = "../data/patient.csv"
 
 # Page Header
 st.title("Efficiency of Healthcare Delivery")
@@ -101,4 +96,4 @@ chart_3 = alt.Chart(df_perethnicity_long, height = 200, title = "Average length 
     tooltip=["Location", "Length of stay (days)", 'region'],
 ).properties(height = 400, width = 600)
 
-st.altair_chart(alt.hconcat(chart_2, chart_3))
+st.altair_chart(alt.vconcat(chart_2, chart_3))

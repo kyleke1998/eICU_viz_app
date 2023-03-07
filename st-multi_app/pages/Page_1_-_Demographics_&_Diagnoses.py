@@ -29,7 +29,8 @@ df = load_data()
 
 # Part 1:
 # ========
-st.write("## Demographics & Diagnoses Between Regions")
+st.title("Demographics & Diagnoses")
+st.subheader("1. Demographics & Diagnoses Between Regions")
 demographic_map = {
     "Gender": "gender",
     "Age Group": "agegroup",
@@ -42,7 +43,7 @@ demographic = st.selectbox(
     options=sorted(demographic_map.keys()),
     index=0,
 )
-# middle: patient demographics with selector
+
 demographic_df = df.value_counts(
     ["region", demographic_map[demographic], "primarydiagnosis"]
 ).reset_index()
@@ -50,8 +51,6 @@ demographic_df.columns = ["Region", demographic, "Diagnosis", "Count"]
 demographic_df["Proportion"] = (
     demographic_df.groupby("Region")["Count"].apply(lambda x: x / x.sum()).round(4)
 )
-
-# TODO: 3 level value counts, use altair count, normalized=true to get proportion with filtering
 
 # middle: patient demographics with selector
 selector1 = alt.selection_multi(fields=["Region", demographic])
@@ -107,7 +106,7 @@ st.altair_chart(
 
 # Part 2:
 # ========
-st.write("## Demographics & Diagnoses Between Hospitals")
+st.subheader("2. Demographics & Diagnoses Between Hospitals")
 
 region = st.radio("Region", ("Midwest", "Northeast", "South", "West"), horizontal=True)
 subset = df[df["region"] == region]
@@ -125,7 +124,7 @@ demographic1 = regional_demographic_map[
     st.selectbox(
         label="Type of categorical demographics",
         options=sorted(regional_demographic_map.keys()),
-        index=0,
+        index=3,
     )
 ]
 selector2 = alt.selection_multi(fields=["hospitalid"])

@@ -1,12 +1,9 @@
 import altair as alt
 import pandas as pd
 import streamlit as st
-import datetime
 from sklearn.metrics import accuracy_score, roc_curve, auc
 from sklearn.metrics import recall_score, precision_score
 import numpy as np
-import matplotlib.pyplot as plt
-import os
 
 
 # os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -184,7 +181,7 @@ jitter_2 =  alt.Chart().mark_circle(size=14).encode(
 
 
 jitter_median_2 = alt.layer(
-    jitter_1,
+    jitter_2,
     alt.Chart().mark_rule().encode(
         y='median(iculos_residual)',
         x=alt.X(),
