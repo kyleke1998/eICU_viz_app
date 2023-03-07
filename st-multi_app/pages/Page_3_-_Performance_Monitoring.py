@@ -181,7 +181,7 @@ jitter_2 =  alt.Chart().mark_circle(size=14).encode(
 
 
 jitter_median_2 = alt.layer(
-    jitter_1,
+    jitter_2,
     alt.Chart().mark_rule().encode(
         y='median(iculos_residual)',
         x=alt.X(),
