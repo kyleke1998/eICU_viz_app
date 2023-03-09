@@ -24,7 +24,8 @@ df_grouped = df.groupby(['region']).mean()
 df_grouped.index.name = 'region'
 df_grouped.reset_index(inplace=True)
 df_grouped.rename(columns={'actualiculos': 'ICU', 'actualhospitallos': 'hospital'}, inplace=True)
-df_grouped_long = pd.melt(df_grouped, id_vars=['region'], value_vars = ['ICU', 'hospital'], var_name= "Location", value_name = "Length of stay (days)")
+df_grouped['Outside ICU'] = df_grouped['hospital'] - df_grouped['ICU']
+df_grouped_long = pd.melt(df_grouped, id_vars=['region'], value_vars = ['ICU', 'Outside ICU'], var_name= "Location", value_name = "Length of stay (days)")
 df_grouped_long = round(df_grouped_long, 2)
 
 #create chart 1
@@ -57,15 +58,18 @@ df_grouped_byhospital = subset.groupby(['hospitalid', 'region']).mean()
 df_grouped_byhospital.index.name = 'hospitalid'
 df_grouped_byhospital.reset_index(inplace=True)
 df_grouped_byhospital.rename(columns={'actualiculos': 'ICU', 'actualhospitallos': 'hospital'}, inplace=True)
+df_grouped_byhospital['Outside ICU'] = df_grouped_byhospital['hospital'] - df_grouped_byhospital['ICU']
 
 
-df_perhospital_long = pd.melt(df_grouped_byhospital, id_vars=['hospitalid', 'region'], value_vars = ['ICU', 'hospital'], var_name = "Location", value_name = "Length of stay (days)")
+
+df_perhospital_long = pd.melt(df_grouped_byhospital, id_vars=['hospitalid', 'region'], value_vars = ['ICU', 'Outside ICU'], var_name = "Location", value_name = "Length of stay (days)")
 df_perhospital_long = round(df_perhospital_long, 2)
 nrows_each = len(df_perhospital_long[df_perhospital_long["Location"]=="ICU"])
 no_hospital_1 = np.arange(1,nrows_each+1).tolist()
 no_hospital_2 = np.arange(1,nrows_each+1).tolist()
 total_no_hospital = no_hospital_1 + no_hospital_1
 df_perhospital_long["hospital number"] = total_no_hospital
+
 
 # create chart 2
 
@@ -82,9 +86,9 @@ df_grouped_byethnicity = subset.groupby(['ethnicity', 'region']).mean()
 df_grouped_byethnicity.index.name = 'ethnicity'
 df_grouped_byethnicity.reset_index(inplace=True)
 df_grouped_byethnicity.rename(columns={'actualiculos': 'ICU', 'actualhospitallos': 'hospital'}, inplace=True)
+df_grouped_byethnicity['Outside ICU'] = df_grouped_byethnicity['hospital'] - df_grouped_byethnicity['ICU']
 
-
-df_perethnicity_long = pd.melt(df_grouped_byethnicity, id_vars=['ethnicity', 'region'], value_vars = ['ICU', 'hospital'], var_name = "Location", value_name = "Length of stay (days)")
+df_perethnicity_long = pd.melt(df_grouped_byethnicity, id_vars=['ethnicity', 'region'], value_vars = ['ICU', 'Outside ICU'], var_name = "Location", value_name = "Length of stay (days)")
 df_perethnicity_long = round(df_perethnicity_long, 2)
 
 # create chart 3
